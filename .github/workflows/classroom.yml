@@ -51,6 +51,9 @@ jobs:
           delayRequest: 100
           reporters: '[ "cli" ]'
 
+      - name: Install newman
+        run: npm install -g newman
+
       - uses: education/autograding@v1
         id: autograder
         continue-on-error: true
