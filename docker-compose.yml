@@ -14,7 +14,65 @@ services:
     ports:
       - "5432:5432"
 
-# TODO добавить сервисы
+  cars:
+    build:
+      context: .
+      dockerfile: src/CarsService/Dockerfile
+    container_name: cars
+    restart: on-failure
+    depends_on:
+      - postgres
+    environment:
+      PORT: "8070"
+      ConnectionStrings__Default: "Host=postgres;Port=5432;Database=cars;Username=program;Password=test"
+    ports:
+      - "8070:8070"
+
+  rental:
+    build:
+      context: .
+      dockerfile: src/RentalService/Dockerfile
+    container_name: rental
+    restart: on-failure
+    depends_on:
+      - postgres
+    environment:
+      PORT: "8060"
+      ConnectionStrings__Default: "Host=postgres;Port=5432;Database=rentals;Username=program;Password=test"
+    ports:
+      - "8060:8060"
+
+  payment:
+    build:
+      context: .
+      dockerfile: src/PaymentService/Dockerfile
+    container_name: payment
+    restart: on-failure
+    depends_on:
+      - postgres
+    environment:
+      PORT: "8050"
+      ConnectionStrings__Default: "Host=postgres;Port=5432;Database=payments;Username=program;Password=test"
+    ports:
+      - "8050:8050"
+
+  gateway:
+    build:
+      context: .
+      dockerfile: src/Gateway/Dockerfile
+    container_name: gateway
+    restart: on-failure
+    depends_on:
+      - cars
+      - rental
+      - payment
+    environment:
+      PORT: "8080"
+      CARS_SERVICE_URL: "http://cars:8070"
+      RENTAL_SERVICE_URL: "http://rental:8060"
+      PAYMENT_SERVICE_URL: "http://payment:8050"
+    ports:
+      - "8080:8080"
 
 volumes:
   db-data:

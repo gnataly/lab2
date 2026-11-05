@@ -1,0 +1,8 @@
+**/bin/
+**/obj/
+tests/
+.git/
+.gitignore
+.vs/
+.nessy/
+**/appsettings.Development.json
